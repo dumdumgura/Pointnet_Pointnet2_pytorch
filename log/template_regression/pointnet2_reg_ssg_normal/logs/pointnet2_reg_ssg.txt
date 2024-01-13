@@ -1,0 +1,245 @@
+2024-01-13 14:17:04,882 - Model - INFO - PARAMETER ...
+2024-01-13 14:17:04,882 - Model - INFO - Namespace(batch_size=2, decay_rate=0, epoch=20000, gpu='0', learning_rate=0.0001, log_dir='pointnet2_reg_ssg_normal', model='pointnet2_reg_ssg', num_category=20, num_point=1024, optimizer='Adam', process_data=False, use_cpu=False, use_normals=True, use_uniform_sample=False)
+2024-01-13 14:17:04,882 - Model - INFO - Load dataset ...
+2024-01-13 14:18:51,890 - Model - INFO - PARAMETER ...
+2024-01-13 14:18:51,890 - Model - INFO - Namespace(batch_size=2, decay_rate=0, epoch=20000, gpu='0', learning_rate=0.0001, log_dir='pointnet2_reg_ssg_normal', model='pointnet2_reg_ssg', num_category=20, num_point=1024, optimizer='Adam', process_data=False, use_cpu=False, use_normals=True, use_uniform_sample=False)
+2024-01-13 14:18:51,890 - Model - INFO - Load dataset ...
+2024-01-13 14:18:53,878 - Model - INFO - No existing model, starting training from scratch...
+2024-01-13 14:18:53,879 - Model - INFO - Start training...
+2024-01-13 14:18:53,879 - Model - INFO - Epoch 1 (1/20000):
+2024-01-13 14:18:58,818 - Model - INFO - Train pred loss: 3.821758
+2024-01-13 14:18:58,819 - Model - INFO - Epoch 2 (2/20000):
+2024-01-13 14:18:58,843 - Model - INFO - Train pred loss: 2.973353
+2024-01-13 14:18:58,843 - Model - INFO - Epoch 3 (3/20000):
+2024-01-13 14:18:58,858 - Model - INFO - Train pred loss: 1.990309
+2024-01-13 14:18:58,858 - Model - INFO - Epoch 4 (4/20000):
+2024-01-13 14:18:58,872 - Model - INFO - Train pred loss: 1.581575
+2024-01-13 14:18:58,872 - Model - INFO - Epoch 5 (5/20000):
+2024-01-13 14:18:58,886 - Model - INFO - Train pred loss: 1.338105
+2024-01-13 14:18:58,886 - Model - INFO - Epoch 6 (6/20000):
+2024-01-13 14:18:58,900 - Model - INFO - Train pred loss: 1.293639
+2024-01-13 14:18:58,901 - Model - INFO - Epoch 7 (7/20000):
+2024-01-13 14:18:58,914 - Model - INFO - Train pred loss: 1.379592
+2024-01-13 14:18:58,914 - Model - INFO - Epoch 8 (8/20000):
+2024-01-13 14:18:58,928 - Model - INFO - Train pred loss: 1.164474
+2024-01-13 14:18:58,928 - Model - INFO - Epoch 9 (9/20000):
+2024-01-13 14:18:58,941 - Model - INFO - Train pred loss: 1.111526
+2024-01-13 14:18:58,941 - Model - INFO - Epoch 10 (10/20000):
+2024-01-13 14:18:58,954 - Model - INFO - Train pred loss: 0.845541
+2024-01-13 14:18:58,954 - Model - INFO - Epoch 11 (11/20000):
+2024-01-13 14:18:58,968 - Model - INFO - Train pred loss: 0.935724
+2024-01-13 14:18:58,968 - Model - INFO - Epoch 12 (12/20000):
+2024-01-13 14:18:58,982 - Model - INFO - Train pred loss: 0.718823
+2024-01-13 14:18:58,983 - Model - INFO - Epoch 13 (13/20000):
+2024-01-13 14:18:58,998 - Model - INFO - Train pred loss: 0.627907
+2024-01-13 14:18:58,998 - Model - INFO - Epoch 14 (14/20000):
+2024-01-13 14:18:59,014 - Model - INFO - Train pred loss: 0.471034
+2024-01-13 14:18:59,014 - Model - INFO - Epoch 15 (15/20000):
+2024-01-13 14:18:59,034 - Model - INFO - Train pred loss: 0.444967
+2024-01-13 14:18:59,034 - Model - INFO - Epoch 16 (16/20000):
+2024-01-13 14:18:59,059 - Model - INFO - Train pred loss: 0.482751
+2024-01-13 14:18:59,059 - Model - INFO - Epoch 17 (17/20000):
+2024-01-13 14:18:59,094 - Model - INFO - Train pred loss: 0.675137
+2024-01-13 14:18:59,094 - Model - INFO - Epoch 18 (18/20000):
+2024-01-13 14:18:59,128 - Model - INFO - Train pred loss: 0.421283
+2024-01-13 14:18:59,129 - Model - INFO - Epoch 19 (19/20000):
+2024-01-13 14:18:59,153 - Model - INFO - Train pred loss: 0.604381
+2024-01-13 14:18:59,153 - Model - INFO - Epoch 20 (20/20000):
+2024-01-13 14:18:59,168 - Model - INFO - Train pred loss: 0.488383
+2024-01-13 14:18:59,168 - Model - INFO - Epoch 21 (21/20000):
+2024-01-13 14:18:59,183 - Model - INFO - Train pred loss: 0.426546
+2024-01-13 14:18:59,183 - Model - INFO - Epoch 22 (22/20000):
+2024-01-13 14:18:59,203 - Model - INFO - Train pred loss: 0.552961
+2024-01-13 14:18:59,203 - Model - INFO - Epoch 23 (23/20000):
+2024-01-13 14:18:59,219 - Model - INFO - Train pred loss: 0.468419
+2024-01-13 14:18:59,219 - Model - INFO - Epoch 24 (24/20000):
+2024-01-13 14:18:59,235 - Model - INFO - Train pred loss: 0.401506
+2024-01-13 14:18:59,235 - Model - INFO - Epoch 25 (25/20000):
+2024-01-13 14:18:59,250 - Model - INFO - Train pred loss: 0.422853
+2024-01-13 14:18:59,250 - Model - INFO - Epoch 26 (26/20000):
+2024-01-13 14:18:59,265 - Model - INFO - Train pred loss: 0.460040
+2024-01-13 14:18:59,265 - Model - INFO - Epoch 27 (27/20000):
+2024-01-13 14:18:59,281 - Model - INFO - Train pred loss: 0.384420
+2024-01-13 14:18:59,281 - Model - INFO - Epoch 28 (28/20000):
+2024-01-13 14:18:59,297 - Model - INFO - Train pred loss: 0.529829
+2024-01-13 14:18:59,297 - Model - INFO - Epoch 29 (29/20000):
+2024-01-13 14:18:59,312 - Model - INFO - Train pred loss: 0.331152
+2024-01-13 14:18:59,312 - Model - INFO - Epoch 30 (30/20000):
+2024-01-13 14:18:59,329 - Model - INFO - Train pred loss: 0.367945
+2024-01-13 14:18:59,329 - Model - INFO - Epoch 31 (31/20000):
+2024-01-13 14:18:59,344 - Model - INFO - Train pred loss: 0.361931
+2024-01-13 14:18:59,344 - Model - INFO - Epoch 32 (32/20000):
+2024-01-13 14:18:59,359 - Model - INFO - Train pred loss: 0.373425
+2024-01-13 14:18:59,359 - Model - INFO - Epoch 33 (33/20000):
+2024-01-13 14:18:59,373 - Model - INFO - Train pred loss: 0.374998
+2024-01-13 14:18:59,374 - Model - INFO - Epoch 34 (34/20000):
+2024-01-13 14:18:59,388 - Model - INFO - Train pred loss: 0.388573
+2024-01-13 14:18:59,388 - Model - INFO - Epoch 35 (35/20000):
+2024-01-13 14:18:59,402 - Model - INFO - Train pred loss: 0.345603
+2024-01-13 14:18:59,402 - Model - INFO - Epoch 36 (36/20000):
+2024-01-13 14:18:59,417 - Model - INFO - Train pred loss: 0.287217
+2024-01-13 14:18:59,417 - Model - INFO - Epoch 37 (37/20000):
+2024-01-13 14:18:59,431 - Model - INFO - Train pred loss: 0.337608
+2024-01-13 14:18:59,431 - Model - INFO - Epoch 38 (38/20000):
+2024-01-13 14:18:59,446 - Model - INFO - Train pred loss: 0.264398
+2024-01-13 14:18:59,446 - Model - INFO - Epoch 39 (39/20000):
+2024-01-13 14:18:59,461 - Model - INFO - Train pred loss: 0.265573
+2024-01-13 14:18:59,461 - Model - INFO - Epoch 40 (40/20000):
+2024-01-13 14:18:59,475 - Model - INFO - Train pred loss: 0.262690
+2024-01-13 14:18:59,475 - Model - INFO - Epoch 41 (41/20000):
+2024-01-13 14:18:59,490 - Model - INFO - Train pred loss: 0.224475
+2024-01-13 14:18:59,490 - Model - INFO - Epoch 42 (42/20000):
+2024-01-13 14:18:59,504 - Model - INFO - Train pred loss: 0.324103
+2024-01-13 14:18:59,504 - Model - INFO - Epoch 43 (43/20000):
+2024-01-13 14:18:59,530 - Model - INFO - Train pred loss: 0.212961
+2024-01-13 14:18:59,530 - Model - INFO - Epoch 44 (44/20000):
+2024-01-13 14:18:59,551 - Model - INFO - Train pred loss: 0.255919
+2024-01-13 14:18:59,551 - Model - INFO - Epoch 45 (45/20000):
+2024-01-13 14:18:59,593 - Model - INFO - Train pred loss: 0.168771
+2024-01-13 14:18:59,593 - Model - INFO - Epoch 46 (46/20000):
+2024-01-13 14:18:59,633 - Model - INFO - Train pred loss: 0.221052
+2024-01-13 14:18:59,633 - Model - INFO - Epoch 47 (47/20000):
+2024-01-13 14:18:59,655 - Model - INFO - Train pred loss: 0.240776
+2024-01-13 14:18:59,655 - Model - INFO - Epoch 48 (48/20000):
+2024-01-13 14:18:59,675 - Model - INFO - Train pred loss: 0.188080
+2024-01-13 14:18:59,675 - Model - INFO - Epoch 49 (49/20000):
+2024-01-13 14:18:59,691 - Model - INFO - Train pred loss: 0.211660
+2024-01-13 14:18:59,691 - Model - INFO - Epoch 50 (50/20000):
+2024-01-13 14:18:59,708 - Model - INFO - Train pred loss: 0.174562
+2024-01-13 14:18:59,708 - Model - INFO - Epoch 51 (51/20000):
+2024-01-13 14:18:59,726 - Model - INFO - Train pred loss: 0.211767
+2024-01-13 14:18:59,726 - Model - INFO - Epoch 52 (52/20000):
+2024-01-13 14:18:59,742 - Model - INFO - Train pred loss: 0.176306
+2024-01-13 14:18:59,742 - Model - INFO - Epoch 53 (53/20000):
+2024-01-13 14:18:59,758 - Model - INFO - Train pred loss: 0.162736
+2024-01-13 14:18:59,758 - Model - INFO - Epoch 54 (54/20000):
+2024-01-13 14:18:59,773 - Model - INFO - Train pred loss: 0.175270
+2024-01-13 14:18:59,773 - Model - INFO - Epoch 55 (55/20000):
+2024-01-13 14:18:59,788 - Model - INFO - Train pred loss: 0.152655
+2024-01-13 14:18:59,788 - Model - INFO - Epoch 56 (56/20000):
+2024-01-13 14:18:59,802 - Model - INFO - Train pred loss: 0.208626
+2024-01-13 14:18:59,802 - Model - INFO - Epoch 57 (57/20000):
+2024-01-13 14:18:59,819 - Model - INFO - Train pred loss: 0.202535
+2024-01-13 14:18:59,819 - Model - INFO - Epoch 58 (58/20000):
+2024-01-13 14:18:59,840 - Model - INFO - Train pred loss: 0.181339
+2024-01-13 14:18:59,840 - Model - INFO - Epoch 59 (59/20000):
+2024-01-13 14:18:59,867 - Model - INFO - Train pred loss: 0.186289
+2024-01-13 14:18:59,867 - Model - INFO - Epoch 60 (60/20000):
+2024-01-13 14:18:59,883 - Model - INFO - Train pred loss: 0.218211
+2024-01-13 14:18:59,883 - Model - INFO - Epoch 61 (61/20000):
+2024-01-13 14:18:59,900 - Model - INFO - Train pred loss: 0.212782
+2024-01-13 14:18:59,900 - Model - INFO - Epoch 62 (62/20000):
+2024-01-13 14:18:59,915 - Model - INFO - Train pred loss: 0.192157
+2024-01-13 14:18:59,915 - Model - INFO - Epoch 63 (63/20000):
+2024-01-13 14:18:59,935 - Model - INFO - Train pred loss: 0.211934
+2024-01-13 14:18:59,935 - Model - INFO - Epoch 64 (64/20000):
+2024-01-13 14:18:59,955 - Model - INFO - Train pred loss: 0.211681
+2024-01-13 14:18:59,955 - Model - INFO - Epoch 65 (65/20000):
+2024-01-13 14:18:59,970 - Model - INFO - Train pred loss: 0.218541
+2024-01-13 14:18:59,970 - Model - INFO - Epoch 66 (66/20000):
+2024-01-13 14:18:59,984 - Model - INFO - Train pred loss: 0.193169
+2024-01-13 14:18:59,984 - Model - INFO - Epoch 67 (67/20000):
+2024-01-13 14:18:59,998 - Model - INFO - Train pred loss: 0.173265
+2024-01-13 14:18:59,998 - Model - INFO - Epoch 68 (68/20000):
+2024-01-13 14:19:00,011 - Model - INFO - Train pred loss: 0.199346
+2024-01-13 14:19:00,011 - Model - INFO - Epoch 69 (69/20000):
+2024-01-13 14:19:00,025 - Model - INFO - Train pred loss: 0.167142
+2024-01-13 14:19:00,025 - Model - INFO - Epoch 70 (70/20000):
+2024-01-13 14:19:00,038 - Model - INFO - Train pred loss: 0.170142
+2024-01-13 14:19:00,038 - Model - INFO - Epoch 71 (71/20000):
+2024-01-13 14:19:00,051 - Model - INFO - Train pred loss: 0.211221
+2024-01-13 14:19:00,051 - Model - INFO - Epoch 72 (72/20000):
+2024-01-13 14:19:00,064 - Model - INFO - Train pred loss: 0.162417
+2024-01-13 14:19:00,064 - Model - INFO - Epoch 73 (73/20000):
+2024-01-13 14:19:00,078 - Model - INFO - Train pred loss: 0.183420
+2024-01-13 14:19:00,079 - Model - INFO - Epoch 74 (74/20000):
+2024-01-13 14:19:00,093 - Model - INFO - Train pred loss: 0.192528
+2024-01-13 14:19:00,093 - Model - INFO - Epoch 75 (75/20000):
+2024-01-13 14:19:00,107 - Model - INFO - Train pred loss: 0.164783
+2024-01-13 14:19:00,108 - Model - INFO - Epoch 76 (76/20000):
+2024-01-13 14:19:00,121 - Model - INFO - Train pred loss: 0.197268
+2024-01-13 14:19:00,121 - Model - INFO - Epoch 77 (77/20000):
+2024-01-13 14:19:00,135 - Model - INFO - Train pred loss: 0.220977
+2024-01-13 14:19:00,135 - Model - INFO - Epoch 78 (78/20000):
+2024-01-13 14:19:00,149 - Model - INFO - Train pred loss: 0.140964
+2024-01-13 14:19:00,149 - Model - INFO - Epoch 79 (79/20000):
+2024-01-13 14:19:00,164 - Model - INFO - Train pred loss: 0.107158
+2024-01-13 14:19:00,164 - Model - INFO - Epoch 80 (80/20000):
+2024-01-13 14:19:00,178 - Model - INFO - Train pred loss: 0.111338
+2024-01-13 14:19:00,178 - Model - INFO - Epoch 81 (81/20000):
+2024-01-13 14:19:00,191 - Model - INFO - Train pred loss: 0.107686
+2024-01-13 14:19:00,191 - Model - INFO - Epoch 82 (82/20000):
+2024-01-13 14:19:00,204 - Model - INFO - Train pred loss: 0.175976
+2024-01-13 14:19:00,204 - Model - INFO - Epoch 83 (83/20000):
+2024-01-13 14:19:00,217 - Model - INFO - Train pred loss: 0.113214
+2024-01-13 14:19:00,217 - Model - INFO - Epoch 84 (84/20000):
+2024-01-13 14:19:00,229 - Model - INFO - Train pred loss: 0.116970
+2024-01-13 14:19:00,229 - Model - INFO - Epoch 85 (85/20000):
+2024-01-13 14:19:00,241 - Model - INFO - Train pred loss: 0.130936
+2024-01-13 14:19:00,241 - Model - INFO - Epoch 86 (86/20000):
+2024-01-13 14:19:00,253 - Model - INFO - Train pred loss: 0.120500
+2024-01-13 14:19:00,253 - Model - INFO - Epoch 87 (87/20000):
+2024-01-13 14:19:00,266 - Model - INFO - Train pred loss: 0.107016
+2024-01-13 14:19:00,266 - Model - INFO - Epoch 88 (88/20000):
+2024-01-13 14:19:00,280 - Model - INFO - Train pred loss: 0.109710
+2024-01-13 14:19:00,280 - Model - INFO - Epoch 89 (89/20000):
+2024-01-13 14:19:00,294 - Model - INFO - Train pred loss: 0.119907
+2024-01-13 14:19:00,294 - Model - INFO - Epoch 90 (90/20000):
+2024-01-13 14:19:00,308 - Model - INFO - Train pred loss: 0.123291
+2024-01-13 14:19:00,308 - Model - INFO - Epoch 91 (91/20000):
+2024-01-13 14:19:00,322 - Model - INFO - Train pred loss: 0.104667
+2024-01-13 14:19:00,322 - Model - INFO - Epoch 92 (92/20000):
+2024-01-13 14:19:00,335 - Model - INFO - Train pred loss: 0.111091
+2024-01-13 14:19:00,335 - Model - INFO - Epoch 93 (93/20000):
+2024-01-13 14:19:00,350 - Model - INFO - Train pred loss: 0.119852
+2024-01-13 14:19:00,350 - Model - INFO - Epoch 94 (94/20000):
+2024-01-13 14:19:00,363 - Model - INFO - Train pred loss: 0.104074
+2024-01-13 14:19:00,363 - Model - INFO - Epoch 95 (95/20000):
+2024-01-13 14:19:00,377 - Model - INFO - Train pred loss: 0.107715
+2024-01-13 14:19:00,377 - Model - INFO - Epoch 96 (96/20000):
+2024-01-13 14:19:00,389 - Model - INFO - Train pred loss: 0.102696
+2024-01-13 14:19:00,390 - Model - INFO - Epoch 97 (97/20000):
+2024-01-13 14:19:00,401 - Model - INFO - Train pred loss: 0.098803
+2024-01-13 14:19:00,402 - Model - INFO - Epoch 98 (98/20000):
+2024-01-13 14:19:00,413 - Model - INFO - Train pred loss: 0.100286
+2024-01-13 14:19:00,413 - Model - INFO - Epoch 99 (99/20000):
+2024-01-13 14:19:00,425 - Model - INFO - Train pred loss: 0.101765
+2024-01-13 14:19:00,425 - Model - INFO - Epoch 100 (100/20000):
+2024-01-13 14:19:00,436 - Model - INFO - Train pred loss: 0.097014
+2024-01-13 14:19:00,436 - Model - INFO - Epoch 101 (101/20000):
+2024-01-13 14:19:00,448 - Model - INFO - Train pred loss: 0.103247
+2024-01-13 14:19:00,448 - Model - INFO - Epoch 102 (102/20000):
+2024-01-13 14:19:00,459 - Model - INFO - Train pred loss: 0.095478
+2024-01-13 14:19:00,459 - Model - INFO - Epoch 103 (103/20000):
+2024-01-13 14:19:00,471 - Model - INFO - Train pred loss: 0.096514
+2024-01-13 14:19:00,471 - Model - INFO - Epoch 104 (104/20000):
+2024-01-13 14:19:00,485 - Model - INFO - Train pred loss: 0.109538
+2024-01-13 14:19:00,485 - Model - INFO - Epoch 105 (105/20000):
+2024-01-13 14:19:00,499 - Model - INFO - Train pred loss: 0.106143
+2024-01-13 14:19:00,499 - Model - INFO - Epoch 106 (106/20000):
+2024-01-13 14:19:00,513 - Model - INFO - Train pred loss: 0.100036
+2024-01-13 14:19:00,513 - Model - INFO - Epoch 107 (107/20000):
+2024-01-13 14:19:00,527 - Model - INFO - Train pred loss: 0.096297
+2024-01-13 14:19:00,527 - Model - INFO - Epoch 108 (108/20000):
+2024-01-13 14:19:00,541 - Model - INFO - Train pred loss: 0.102616
+2024-01-13 14:19:00,542 - Model - INFO - Epoch 109 (109/20000):
+2024-01-13 14:19:00,556 - Model - INFO - Train pred loss: 0.104559
+2024-01-13 14:19:00,556 - Model - INFO - Epoch 110 (110/20000):
+2024-01-13 14:19:00,570 - Model - INFO - Train pred loss: 0.100720
+2024-01-13 14:19:00,570 - Model - INFO - Epoch 111 (111/20000):
+2024-01-13 14:19:00,583 - Model - INFO - Train pred loss: 0.102933
+2024-01-13 14:19:00,583 - Model - INFO - Epoch 112 (112/20000):
+2024-01-13 14:19:00,596 - Model - INFO - Train pred loss: 0.100469
+2024-01-13 14:19:00,596 - Model - INFO - Epoch 113 (113/20000):
+2024-01-13 14:19:00,608 - Model - INFO - Train pred loss: 0.104740
+2024-01-13 14:19:00,609 - Model - INFO - Epoch 114 (114/20000):
+2024-01-13 14:19:00,620 - Model - INFO - Train pred loss: 0.098994
+2024-01-13 14:19:00,620 - Model - INFO - Epoch 115 (115/20000):
+2024-01-13 14:19:00,632 - Model - INFO - Train pred loss: 0.097560
+2024-01-13 14:19:00,632 - Model - INFO - Epoch 116 (116/20000):
+2024-01-13 14:19:00,643 - Model - INFO - Train pred loss: 0.102957
+2024-01-13 14:19:00,643 - Model - INFO - Epoch 117 (117/20000):
+2024-01-13 14:19:00,654 - Model - INFO - Train pred loss: 0.089968
+2024-01-13 14:19:00,654 - Model - INFO - Epoch 118 (118/20000):
+2024-01-13 14:19:00,666 - Model - INFO - Train pred loss: 0.096421
+2024-01-13 14:19:00,666 - Model - INFO - Epoch 119 (119/20000):

@@ -9,6 +9,8 @@ class get_model(nn.Module):
         in_channel = 6 if normal_channel else 3
         self.normal_channel = normal_channel
         self.sa1 = PointNetSetAbstraction(npoint=512, radius=0.2, nsample=32, in_channel=in_channel, mlp=[64, 64, 128], group_all=False)
+
+        #'''
         self.sa2 = PointNetSetAbstraction(npoint=128, radius=0.4, nsample=64, in_channel=128 + 3, mlp=[128, 128, 256], group_all=False)
         self.sa3 = PointNetSetAbstraction(npoint=None, radius=None, nsample=None, in_channel=256 + 3, mlp=[256, 512, 1024], group_all=True)
         self.fc1 = nn.Linear(1024, 512)
@@ -18,6 +20,7 @@ class get_model(nn.Module):
         self.bn2 = nn.BatchNorm1d(256)
         self.drop2 = nn.Dropout(0.4)
         self.fc3 = nn.Linear(256, num_class)
+        #'''
 
     def forward(self, xyz):
         B, _, _ = xyz.shape
