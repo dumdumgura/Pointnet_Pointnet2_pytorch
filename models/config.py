@@ -89,8 +89,11 @@ interval_step = 50000
 # Losses
 lambda_geometry = 1.0
 lambda_sampling_uniform = 1.0
-lambda_sampling_near_surface = 0.1
+lambda_sampling_near_surface = None
 lambda_sampling_node_center = 1.0
+
+lambda_sampling_node_sparse = 0.5
+
 lambda_viewpoint_position = 10.0
 lambda_viewpoint_scale = 1.0
 lambda_viewpoint_constant = 1.0

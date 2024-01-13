@@ -13,6 +13,20 @@ from models.node_proc import convert_embedding_to_explicit_params, compute_inver
     sample_rbf_surface, sample_rbf_weights, bounding_box_error, extract_view_omegas_from_embedding
 
 
+def vis_data(pts):
+    import pyrender
+    xyz = pts[:, 0:3]
+    sdf = pts[:, 3]
+    colors = np.zeros(xyz.shape)
+    colors[sdf < 0.00, 2] = 1
+    colors[sdf > 0.00, 0] = 1
+    cloud = pyrender.Mesh.from_points(xyz, colors)
+
+    scene = pyrender.Scene()
+    scene.add(cloud)
+    viewer = pyrender.Viewer(scene, use_raymond_lighting=True, point_size=3)
+
+
 class SamplerLoss(torch.nn.Module):
     def __init__(self):
         super(SamplerLoss, self).__init__()
@@ -23,6 +37,7 @@ class SamplerLoss(torch.nn.Module):
         self.unique_neighbor_loss = UniqueNeighborLoss()
         self.viewpoint_consistency_loss = ViewpointConsistencyLoss()
         self.surface_consistency_loss = SurfaceConsistencyLoss()
+        self.node_sparsity_loss =NodeSparsityLoss()
 
     def createBatchEllipsoids(self,n, scale_constants, centers, semi_axes, rotation_matrices):
         resolution = 25  # Number of points on each axis
@@ -77,23 +92,11 @@ class SamplerLoss(torch.nn.Module):
             mesh.triangles = o3d.utility.Vector3iVector(triangles)
 
             wireFrame = o3d.geometry.LineSet.create_from_triangle_mesh(mesh)
-            wireFrame.paint_uniform_color(color[i])  # Color the wireframe
+            wireFrame.paint_uniform_color([0,0,0])  # Color the wireframe
             meshes.append(wireFrame)
 
         return meshes
 
-    def vis_data(self,pts):
-        import pyrender
-        xyz = pts[:,0:3]
-        sdf = pts[:,3]
-        colors = np.zeros(xyz.shape)
-        colors[sdf < 0.00, 2] = 1
-        colors[sdf > 0.00, 0] = 1
-        cloud = pyrender.Mesh.from_points(xyz,colors)
-
-        scene = pyrender.Scene()
-        scene.add(cloud)
-        viewer = pyrender.Viewer(scene, use_raymond_lighting=True, point_size=3)
 
 
     def bounding_box(self,points):
@@ -113,6 +116,7 @@ class SamplerLoss(torch.nn.Module):
     def forward(self, embedding, # prediction of 3D Gaussians ball Batch,num_node*11
                 xs,     #coord,normals
                 target, #sdf values
+                grid, # sdf_grid
                 epoch,
                 #uniform_samples, near_surface_samples, surface_samples, \
                 #grid, world2grid, world2orig, rotated2gaps, bbox_lower, bbox_upper, \
@@ -126,8 +130,8 @@ class SamplerLoss(torch.nn.Module):
 
         uniform_samples=xs[:,-num_pts//2:,0:4]
         near_surface_samples=xs[:,0:num_pts//2,0:4]
-        #self.vis_data(near_surface_samples[0,:,:].detach().cpu().numpy())
-        #self.vis_data(uniform_samples[0, :, :].detach().cpu().numpy())
+        #vis_data(near_surface_samples[0,:,:].detach().cpu().numpy())
+        #vis_data(uniform_samples[0, :, :].detach().cpu().numpy())
 
 
         num_node = embedding.shape[1]//11
@@ -140,7 +144,7 @@ class SamplerLoss(torch.nn.Module):
         ellipsoids=[]
         if epoch % 1000 == 0:
             for i in range(2):
-                ellipsoids = self.createBatchEllipsoids(num_node, constants[i][:,None].cpu().detach().numpy(), centers[i,:,:,0].cpu().detach().numpy(), scales[i].cpu().detach().numpy(), rotations[i].cpu().detach().numpy())
+                ellipsoids = self.createBatchEllipsoids(num_node, constants[i][:,None].cpu().detach().numpy(), centers[i,:,:].cpu().detach().numpy(), scales[i].cpu().detach().numpy(), rotations[i].cpu().detach().numpy())
 
                 # Create an Open3D PointCloud object
                 pcd = o3d.geometry.PointCloud()
@@ -167,8 +171,14 @@ class SamplerLoss(torch.nn.Module):
         loss_node_center = None
         if cfg.lambda_sampling_node_center is not None:
             bbox_lower,bbox_upper =self.bounding_box(near_surface_samples[:,:,0:3])
-            loss_node_center = self.node_center_loss(constants, scales, centers, bbox_lower, bbox_upper)
+            loss_node_center = self.node_center_loss(constants, scales, centers, grid,bbox_lower, bbox_upper)
             loss_total += cfg.lambda_sampling_node_center * loss_node_center
+
+        # Node Sparisity Loss
+        if cfg.lambda_sampling_node_sparse is not None:
+            loss_node_sparse = self.node_sparsity_loss(centers)
+            loss_total += cfg.lambda_sampling_node_sparse * loss_node_sparse
+
 
         '''
         # Affinity loss.
@@ -268,8 +278,13 @@ class NodeCenterLoss(nn.Module):
     def __init__(self):
         super(NodeCenterLoss, self).__init__()
 
-    def forward(self, constants, scales, centers, bbox_lower, bbox_upper):
-        batch_size = constants.shape[0]
+    def forward(self, constants, scales, centers, grid_orig,bbox_lower, bbox_upper):
+        batch_size,num_nodes = constants.shape
+        #extract sdf from grid:
+        #sdf = grid[:,3]
+        #check_data
+        #vis_data(grid_orig[0].detach().cpu().numpy())
+
 
         # Check if centers are inside the bounding box.
         # If not, we penalize them by using L2 distance to nearest bbox corner,
@@ -278,38 +293,75 @@ class NodeCenterLoss(nn.Module):
 
         # Query SDF grid, to encourage centers to be inside the shape.
         # Convert center positions to grid CS.
-        '''
-        centers_grid_cs = centers.view(batch_size, cfg.num_nodes, 3, 1)
-        A_world2grid = world2grid[:, :3, :3].view(batch_size, 1, 3, 3).expand(-1, cfg.num_nodes, -1, -1)
-        t_world2grid = world2grid[:, :3, 3].view(batch_size, 1, 3, 1).expand(-1, cfg.num_nodes, -1, -1)
 
-        centers_grid_cs = torch.matmul(A_world2grid, centers_grid_cs) + t_world2grid
-        centers_grid_cs = centers_grid_cs.view(batch_size, -1, 3)
+        centers_grid_cs = centers.view(batch_size, num_nodes, 3)
+        #A_world2grid = world2grid[:, :3, :3].view(batch_size, 1, 3, 3).expand(-1, cfg.num_nodes, -1, -1)
+        #t_world2grid = world2grid[:, :3, 3].view(batch_size, 1, 3, 1).expand(-1, cfg.num_nodes, -1, -1)
 
+        #centers_grid_cs = torch.matmul(A_world2grid, centers_grid_cs) + t_world2grid
+        #centers_grid_cs = centers_grid_cs.view(batch_size, -1, 3) #batch_size, num_nodes, 3
+
+
+        grid = grid_orig[:,:,3].reshape(batch_size,64,64,64)
         # Sample signed distance field.
         dim_z = grid.shape[1]
         dim_y = grid.shape[2]
         dim_x = grid.shape[3]
-        grid = grid.view(batch_size, 1, dim_z, dim_y, dim_x)
+        grid = grid.view(batch_size, 1, dim_z, dim_y, dim_x) # batch_size, 1, res_z+1, res_y+1, res_x+1
 
-        centers_grid_cs[..., 0] /= float(dim_x - 1)
-        centers_grid_cs[..., 1] /= float(dim_y - 1)
-        centers_grid_cs[..., 2] /= float(dim_z - 1)
-        centers_grid_cs = 2.0 * centers_grid_cs - 1.0
-        centers_grid_cs = centers_grid_cs.view(batch_size, -1, 1, 1, 3)
+
+
+        #normalize the center_coordinate to grid_coordinate
+        #centers_grid_cs[..., 0] /= float(dim_x - 1)
+        #centers_grid_cs[..., 1] /= float(dim_y - 1)
+        #centers_grid_cs[..., 2] /= float(dim_z - 1)
+        #centers_grid_cs = 2.0 * centers_grid_cs - 1.0
+        centers_grid_cs = centers_grid_cs.view(batch_size, -1, 1, 1, 3)  #batch_size, num_nodes,1,1,3
+
 
         # We use border values for out-of-the-box queries, to have gradient zero at boundaries.
-        centers_sdf_gt = torch.nn.functional.grid_sample(grid, centers_grid_cs, align_corners=True,
+        centers_sdf_gt = torch.nn.functional.grid_sample(grid.double(), centers_grid_cs.double(), align_corners=True,
                                                          padding_mode="border")
 
+
+
         # If SDF value is higher than 0, we penalize it.
-        centers_sdf_gt = centers_sdf_gt.view(batch_size, cfg.num_nodes)
+        centers_sdf_gt = centers_sdf_gt.view(batch_size, num_nodes)
         center_distance_error = torch.max(centers_sdf_gt, torch.zeros_like(centers_sdf_gt))  # (bs, num_nodes)
-        
-        '''
+
+
         # Final loss is just a sum of both losses.
-        node_center_loss = bbox_error
+        node_center_loss = bbox_error+center_distance_error
+        #node_center_loss = center_distance_error
+
         return torch.mean(node_center_loss)
+
+class NodeSparsityLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self,centers):
+        #centers.shape: (batch_size, num_nodes, 3)
+        batch_size,num_nodes,_=centers.shape
+
+        # Compute pairwise distances between points
+        distances = torch.norm(centers[:, :, None, :] - centers[:, None, :, :], dim=-1)       #batch_size, num_nodes,num_nodes
+
+        # Exclude the distance to self
+        mask = (torch.eye(num_nodes, dtype=torch.bool).to(distances.device)).expand(batch_size,-1, -1)
+        distances = distances.masked_fill(mask, float('inf'))
+
+        # Find the index of the nearest neighbor for each point
+        _, min_distances_idx = torch.min(distances, dim=-1)  # batch_size, num_nodes
+
+        # Extract the actual minimum distances
+        min_distances = torch.gather(distances, dim=-1, index=min_distances_idx.unsqueeze(-1))
+
+        # Compute regularization loss based on distances
+        loss =  torch.mean(torch.pow(min_distances.squeeze(0) - 0.2, 2))
+
+        return loss
+
 
 
 class AffinityLoss(nn.Module):

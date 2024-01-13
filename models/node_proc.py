@@ -39,7 +39,7 @@ def convert_embedding_to_explicit_params(embedding, num_nodes, scaling_type='ani
     # constant = -torch.min(torch.abs(constant), max_constant * torch.ones_like(constant))
     # constant = -torch.sigmoid(constant) * max_constant
     center = center * center_scale
-    center = center.view(batch_size, num_nodes, 3, 1)
+    center = center.view(batch_size, num_nodes, 3)
 
     # We represent rotations in axis-angle notation.
     #rotation = kornia.angle_axis_to_rotation_matrix(rotation.view(batch_size * num_nodes, 3))
@@ -146,7 +146,7 @@ def sample_rbf_surface(points, constants, scales, centers, use_constants, aggreg
 
 def bounding_box_error(points, bbox_lower, bbox_upper):
     #points->center of nodes: BS,num_nodes,3
-    points = points[:,:,:,0]
+
     batch_size = points.shape[0]
     num_points = points.shape[1]
     assert points.shape[2] == 3

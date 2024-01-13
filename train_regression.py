@@ -195,6 +195,7 @@ def main(args):
             #coord_inputs.requires_grad_()
             target = xt['sdf'].to(device)
             normals = xt['normal'].to(device)
+            grid = xt['grid'].to(device)
             xs = torch.concatenate([coord_inputs, normals], dim=-1) # batch, num_pts,6
 
             #zero grads of model and optimizier
@@ -217,7 +218,7 @@ def main(args):
 
             pred, trans_feat = classifier(points) # pred.shape = Batch,num_ball*params
 
-            loss = criterion(pred,xs,target,epoch)
+            loss = criterion(pred,xs,target,grid,epoch)
             #pred_choice = pred.data.max(1)[1]
 
             #correct = pred_choice.eq(target.long().data).cpu().sum()

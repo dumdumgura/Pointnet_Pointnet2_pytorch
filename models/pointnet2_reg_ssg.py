@@ -5,6 +5,7 @@ from pointnet_utils import PointNetEncoder, feature_transform_reguliarzer
 import pyrender
 
 class get_model(nn.Module):
+    # template_prediction
     def __init__(self,num_class,normal_channel=True):
         super(get_model, self).__init__()
         if normal_channel:
@@ -41,3 +42,44 @@ class get_model(nn.Module):
         viewer = pyrender.Viewer(scene, use_raymond_lighting=True, point_size=5)
 
 
+class MLP(nn.Module):
+    def __init__(self):
+        super().__init__()
+        # declariation of network component
+
+
+    def forward(self,x):
+        #computation of x
+
+        return x
+
+class MultiMLP(nn.Module):
+    def __init__(self, num_nodes):
+        super().__init__()
+        # declariation of network component
+        MLP_list = []
+        for i in range(num_nodes):
+            MLP_list.append(MLP())
+
+
+    def forward(self,x,T):
+        # Compute Gaussians: G(x,theta): Batch, num_pts
+        # Evaluate MLP:
+            # x.shape = batch, num_pts, 3
+            # local_x.shape = batch * num_pts, num_nodes, 3    (local_xi = T-1 * global_x)
+            # feed local_x to MLP: R3->R
+            # output of MLP: batch * num_pts, num_nodes, 1
+        # Sum:
+            # sdf: batch, num_pts
+
+        # Weightening: LDIF(x)=G(x,theta) * SDF(x)
+            # sdf: batch, num_pts
+
+        return x
+
+    def Analytic_shape_function(self,x,Embedding):
+        # input:  x    x.shape = batch, num_pts, 3
+        #         T    T.shape = batch, num_nodes, #params_node_i
+        # return: G(x,T)  G.shape = batch, num_pts
+
+        return G

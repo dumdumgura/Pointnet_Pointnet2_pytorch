@@ -38,10 +38,10 @@ class ShapeNet(Dataset):
         if self.type == 'sdf' or self.type =='occ':
             path = os.path.join(self.data_source,self.npyfiles[idx])
             point_cloud = np.load(path)    # half of them near surface, half of them uniform sampling
-            pts = point_cloud.shape[0]
+            pts = 200000
             near_surface_pts = point_cloud[:pts//2,:]
-            uniform_pts = point_cloud[-pts // 2:, :]
-
+            uniform_pts = point_cloud[pts//2:pts, :]
+            grid_pts = point_cloud[pts:,:]
             # check data
             '''
             import pyrender
@@ -55,6 +55,7 @@ class ShapeNet(Dataset):
             scene.add(cloud)
             viewer = pyrender.Viewer(scene, use_raymond_lighting=True, point_size=3)
             '''
+            #self.vis_data(grid_pts)
             near_surface_sample= self.create_sdf_sample(near_surface_pts)
             #self.vis_data(near_surface_sample)
             uniform_sample =self.create_sdf_sample(uniform_pts)
@@ -63,7 +64,8 @@ class ShapeNet(Dataset):
 
             return {"coords": torch.from_numpy(sample[:,:3]).float(),
                     "sdf": torch.from_numpy(sample[:,3][:,None]),
-                    "normal":torch.from_numpy(sample[:,4:7]).float()
+                    "normal":torch.from_numpy(sample[:,4:7]).float(),
+                    "grid": torch.from_numpy(grid_pts[:,0:4])  #sdf_grid
                     }
 
 
