@@ -38,6 +38,7 @@ class SamplerLoss(torch.nn.Module):
         self.viewpoint_consistency_loss = ViewpointConsistencyLoss()
         self.surface_consistency_loss = SurfaceConsistencyLoss()
         self.node_sparsity_loss =NodeSparsityLoss()
+        self.node_similiar_loss = NodeSimiliarityLoss()
 
     def createBatchEllipsoids(self,n, scale_constants, centers, semi_axes, rotation_matrices):
         resolution = 25  # Number of points on each axis
@@ -137,13 +138,34 @@ class SamplerLoss(torch.nn.Module):
         num_node = embedding.shape[1]//11
         loss_total = torch.zeros((1), dtype=embedding.dtype, device=embedding.device)
         #view_omegas = extract_view_omegas_from_embedding(embedding, cfg.num_nodes)
-        constants, scales, rotations, centers = convert_embedding_to_explicit_params(embedding, num_node)
-        print(torch.mean(scales,dim=[0,1]))
+        constants, scales, rotations, centers = convert_embedding_to_explicit_params(embedding, num_node) # batch_size, num_nodes ( () ,(3), (3,3), (3))
+        #print(torch.mean(scales,dim=[0,1]))
+
+        #duplicate the ball based on symmetry:
+        # flip_axis : x:0, y:1,z:2
+        flip_axis=0
+        constants_dup = constants.clone()
+        scales_dup = scales.clone()
+        #scales_dup[:,:,flip_axis] = -scales_dup[:,:,flip_axis]
+        rotations_dup = rotations.clone()
+        rotations_dup[:,:,flip_axis,:] = -rotations_dup[:,:,flip_axis,:]
+        centers_dup=centers.clone()
+        centers_dup[:,:,flip_axis] = -centers_dup[:,:,flip_axis]
+
+        constants = torch.cat([constants,constants_dup],dim=1)
+        scales = torch.cat([scales,scales_dup],dim=1)
+        rotations = torch.cat([rotations,rotations_dup],dim=1)
+        centers = torch.cat([centers,centers_dup],dim=1)
+
+        num_node *=2
+
+
 
         # Create batch ellipsoids
         ellipsoids=[]
-        if epoch % 1000 == 0:
+        if epoch % 100 == 0:
             for i in range(2):
+
                 ellipsoids = self.createBatchEllipsoids(num_node, constants[i][:,None].cpu().detach().numpy(), centers[i,:,:].cpu().detach().numpy(), scales[i].cpu().detach().numpy(), rotations[i].cpu().detach().numpy())
 
                 # Create an Open3D PointCloud object
@@ -153,17 +175,20 @@ class SamplerLoss(torch.nn.Module):
                 # Visualize all ellipsoids
                 ellipsoids.append(pcd)
                 o3d.visualization.draw_geometries(ellipsoids)
+                break
 
         # Uniform sampling loss.
         loss_uniform = None
         if cfg.lambda_sampling_uniform is not None:
-            loss_uniform = self.point_loss(uniform_samples, constants, scales, centers)
+            loss_uniform = self.point_loss(uniform_samples, constants, scales, rotations, centers)
+            print("loss_uniform: "+str(loss_uniform))
             loss_total += cfg.lambda_sampling_uniform * loss_uniform
 
         # Near surface sampling loss.
         loss_near_surface = None
         if cfg.lambda_sampling_near_surface is not None:
-            loss_near_surface = self.point_loss(near_surface_samples, constants, scales, centers)
+            loss_near_surface = self.point_loss(near_surface_samples, constants, scales, rotations,centers)
+            print("loss_nearsurface: " + str(loss_near_surface))
             loss_total += cfg.lambda_sampling_near_surface * loss_near_surface
 
 
@@ -172,12 +197,20 @@ class SamplerLoss(torch.nn.Module):
         if cfg.lambda_sampling_node_center is not None:
             bbox_lower,bbox_upper =self.bounding_box(near_surface_samples[:,:,0:3])
             loss_node_center = self.node_center_loss(constants, scales, centers, grid,bbox_lower, bbox_upper)
+            print("loss_node_center: " + str(loss_node_center))
             loss_total += cfg.lambda_sampling_node_center * loss_node_center
 
         # Node Sparisity Loss
         if cfg.lambda_sampling_node_sparse is not None:
             loss_node_sparse = self.node_sparsity_loss(centers)
+            print("loss_node_sparse: " + str(loss_node_sparse))
             loss_total += cfg.lambda_sampling_node_sparse * loss_node_sparse
+
+        # Node Similiarity Loss
+        if cfg.lambda_sampling_node_similiar is not None:
+            loss_node_similiar = self.node_similiar_loss(constants,scales)
+            print("loss_node_similiar: " + str(loss_node_similiar))
+            loss_total += cfg.lambda_sampling_node_similiar * loss_node_similiar
 
 
         '''
@@ -249,7 +282,8 @@ class PointLoss(nn.Module):
     def __init__(self):
         super(PointLoss, self).__init__()
 
-    def forward(self, points_with_sdf, constants, scales, centers):
+    def forward(self, points_with_sdf, constants, scales,rotations, centers):
+        print(rotations[0,0,:,:])
         batch_size = points_with_sdf.shape[0]
 
         points = points_with_sdf[:, :, :3]
@@ -257,7 +291,7 @@ class PointLoss(nn.Module):
         class_gt = is_outside.float()  # outside: 1, inside: 0
 
         # Evaluate predicted class at given points.
-        sdf_pred = sample_rbf_surface(points, constants, scales, centers, cfg.use_constants,
+        sdf_pred = sample_rbf_surface(points, constants, scales,rotations, centers, cfg.use_constants,
                                       cfg.aggregate_coverage_with_max)
 
         class_pred = compute_inverse_occupancy(sdf_pred, cfg.soft_transfer_scale, cfg.level_set)
@@ -281,9 +315,9 @@ class NodeCenterLoss(nn.Module):
     def forward(self, constants, scales, centers, grid_orig,bbox_lower, bbox_upper):
         batch_size,num_nodes = constants.shape
         #extract sdf from grid:
-        #sdf = grid[:,3]
+        sdf = grid[:,3]
         #check_data
-        #vis_data(grid_orig[0].detach().cpu().numpy())
+        vis_data(grid_orig[0].detach().cpu().numpy())
 
 
         # Check if centers are inside the bounding box.
@@ -331,7 +365,7 @@ class NodeCenterLoss(nn.Module):
 
 
         # Final loss is just a sum of both losses.
-        node_center_loss = bbox_error+center_distance_error
+        node_center_loss = bbox_error+0.0001*center_distance_error
         #node_center_loss = center_distance_error
 
         return torch.mean(node_center_loss)
@@ -348,7 +382,7 @@ class NodeSparsityLoss(nn.Module):
         distances = torch.norm(centers[:, :, None, :] - centers[:, None, :, :], dim=-1)       #batch_size, num_nodes,num_nodes
 
         # Exclude the distance to self
-        mask = (torch.eye(num_nodes, dtype=torch.bool).to(distances.device)).expand(batch_size,-1, -1)
+        mask = (torch.eye(num_nodes, dtype=torch.bool).to(distances.device)).expand(batch_size, -1, -1)
         distances = distances.masked_fill(mask, float('inf'))
 
         # Find the index of the nearest neighbor for each point
@@ -358,10 +392,37 @@ class NodeSparsityLoss(nn.Module):
         min_distances = torch.gather(distances, dim=-1, index=min_distances_idx.unsqueeze(-1))
 
         # Compute regularization loss based on distances
-        loss =  torch.mean(torch.pow(min_distances.squeeze(0) - 0.2, 2))
+        loss_nearst_neighbour = torch.mean(torch.pow(min_distances.squeeze(0) - 0.2, 2))
 
+        '''
+        threshold_distance = 0.3
+
+        # Mask distances exceeding the threshold
+        distances = torch.where(distances > threshold_distance, torch.zeros_like(distances), distances)
+
+        # Compute mean distances to neighbors
+        mean_distances = torch.mean(distances, dim=-1)  # batch_size, num_nodes
+
+        # Compute regularization loss based on distances
+        loss_neighbour = torch.mean(torch.pow(mean_distances - 0.15, 2))
+        '''
+        loss = 10*loss_nearst_neighbour
         return loss
 
+class NodeSimiliarityLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self,scale,radius):
+        radius_weighted = scale[...,None]* radius # batch, num_nodes,3
+        volume = torch.abs(radius_weighted[:,:,0]*radius_weighted[:,:,1]*radius_weighted[:,:,2])
+
+        return self.ellipsoid_volume_loss(volume)# batch,num_nodes
+
+    def ellipsoid_volume_loss(self, volumes):
+        mean_volume = torch.mean(volumes,dim=-1,keepdim=True) # batch
+        loss = torch.nn.functional.l1_loss(volumes, mean_volume * torch.ones_like(volumes)).mean()
+        return loss
 
 
 class AffinityLoss(nn.Module):

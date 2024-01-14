@@ -87,12 +87,13 @@ weight_decay = 0
 interval_step = 50000
 
 # Losses
-lambda_geometry = 1.0
-lambda_sampling_uniform = 1.0
-lambda_sampling_near_surface = None
-lambda_sampling_node_center = 1.0
+lambda_geometry = None
+lambda_sampling_uniform = None
+lambda_sampling_near_surface = None #0.00001
+lambda_sampling_node_similiar = None
+lambda_sampling_node_center = 10.0
+lambda_sampling_node_sparse = None #0.00001
 
-lambda_sampling_node_sparse = 0.5
 
 lambda_viewpoint_position = 10.0
 lambda_viewpoint_scale = 1.0

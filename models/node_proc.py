@@ -28,7 +28,7 @@ def convert_embedding_to_explicit_params(embedding, num_nodes, scaling_type='ani
     rotation = embedding[:, :, 7:11]   #angle-axis
 
     if scaling_type == "anisotropic":
-        scale = torch.sigmoid(scale) * max_blob_radius
+        scale = torch.sigmoid(2*scale) * max_blob_radius
         # TODO: Doesn't support general augmentation, not reliable!
     elif scaling_type == "isotropic":
         scale = torch.sigmoid(scale[:, :, 0].view(batch_size, num_nodes, 1).expand(-1, -1, 3)) * max_blob_radius
@@ -95,7 +95,7 @@ def compute_inverse_occupancy(vals, soft_transfer_scale, level_set):
     return torch.sigmoid(soft_transfer_scale * (vals - level_set))
 
 
-def sample_rbf_weights(points, constants, scales, centers, use_constants):
+def sample_rbf_weights(points, constants, scales, rotations,centers, use_constants):
     batch_size = points.shape[0]
     num_points = points.shape[1]
     assert points.shape[2] == 3
@@ -106,7 +106,16 @@ def sample_rbf_weights(points, constants, scales, centers, use_constants):
     points = points.view(batch_size, num_points, 1, 3).expand(-1, -1, num_nodes, -1)  # (bs, num_points, num_nodes, 3)
     centers = centers.view(batch_size, 1, num_nodes, 3).expand(-1, num_points, -1, -1)  # (bs, num_points, num_nodes, 3)
 
+
     delta = points - centers  # (bs, num_points, num_nodes, 3)
+    # rotation!
+    '''
+    rotations = rotations.permute(0,1,3,2)[:,None].expand(-1,num_points,-1,-1,-1).double()  # batch_size,num_pts,num_nodes,3,3
+    delta = delta.reshape(-1,3)[...,None]                                                   # batch_size*num_pts*num_nodes,3,1
+    rotations = rotations.reshape(-1,3,3)                                                   # batch_size*num_pts*num_nodes,3,3
+    delta = torch.matmul(rotations,delta)                                                   # batch_sie*num_pts*num_nodes,3
+    delta = delta.reshape(batch_size,num_points,num_nodes,3)
+    '''
     delta2 = delta * delta  # (bs, num_points, num_nodes, 3)
 
     # Add anisotropic scaling.
@@ -129,12 +138,12 @@ def sample_rbf_weights(points, constants, scales, centers, use_constants):
     return weight_vals.view(batch_size, num_points, num_nodes)
 
 
-def sample_rbf_surface(points, constants, scales, centers, use_constants, aggregate_coverage_with_max):
+def sample_rbf_surface(points, constants, scales, rotations,centers, use_constants, aggregate_coverage_with_max):
     batch_size = points.shape[0]
     num_points = points.shape[1]
 
     # Sum the contributions of all kernels.
-    weights_vals = sample_rbf_weights(points, constants, scales, centers, use_constants)  # (bs, num_points, num_nodes)
+    weights_vals = sample_rbf_weights(points, constants, scales,rotations, centers, use_constants)  # (bs, num_points, num_nodes)
 
     if aggregate_coverage_with_max:
         sdf_vals, _ = torch.min(-weights_vals, 2)  # (bs, num_points)

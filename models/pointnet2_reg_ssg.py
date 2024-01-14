@@ -82,4 +82,4 @@ class MultiMLP(nn.Module):
         #         T    T.shape = batch, num_nodes, #params_node_i
         # return: G(x,T)  G.shape = batch, num_pts
 
-        return G
+        return 0

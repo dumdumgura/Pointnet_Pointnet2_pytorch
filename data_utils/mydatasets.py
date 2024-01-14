@@ -16,7 +16,7 @@ class ShapeNet(Dataset):
         self.split = split
         self.data_source = os.path.join(dataset_folder,split)
         #self.filter = os.path.join(dataset_folder,'shape_filter_small.txt')
-        self.batch = 3000
+        self.batch = 30000
         self.type = type
         files = []
         filter_list=[]
